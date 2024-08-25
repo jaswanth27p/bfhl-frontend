@@ -7,10 +7,12 @@ export default function Home() {
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
   const [error, setError] = useState<string>("");
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false); // New state for loading
 
   const handleSubmit = async () => {
     try {
       setError("");
+      setIsLoading(true); // Set loading state to true
       const parsedData = JSON.parse(jsonInput);
 
       if (!Array.isArray(parsedData.data)) {
@@ -29,6 +31,8 @@ export default function Home() {
       setResponseData(result);
     } catch (err: any) {
       setError(err.message);
+    } finally {
+      setIsLoading(false); // Set loading state to false
     }
   };
 
@@ -91,9 +95,10 @@ export default function Home() {
       />
       <button
         onClick={handleSubmit}
-        className="mt-2 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700"
+        className={`mt-2 py-2 px-4 rounded text-white ${isLoading ? "bg-gray-400" : "bg-blue-500 hover:bg-blue-700"}`}
+        disabled={isLoading} // Disable button while loading
       >
-        Submit
+        {isLoading ? "Loading..." : "Submit"} {/* Change button text while loading */}
       </button>
       {error && <p className="text-red-500 mt-2">{error}</p>}
       {responseData && (
@@ -111,8 +116,8 @@ export default function Home() {
                 <div className="py-1">
                   <div
                     className={`cursor-pointer px-4 py-2 text-sm ${selectedOptions.includes("Alphabets")
-                        ? "bg-blue-500 text-white"
-                        : "text-gray-700"
+                      ? "bg-blue-500 text-white"
+                      : "text-gray-700"
                       }`}
                     onClick={() => toggleOption("Alphabets")}
                   >
@@ -120,8 +125,8 @@ export default function Home() {
                   </div>
                   <div
                     className={`cursor-pointer px-4 py-2 text-sm ${selectedOptions.includes("Numbers")
-                        ? "bg-blue-500 text-white"
-                        : "text-gray-700"
+                      ? "bg-blue-500 text-white"
+                      : "text-gray-700"
                       }`}
                     onClick={() => toggleOption("Numbers")}
                   >
@@ -129,8 +134,8 @@ export default function Home() {
                   </div>
                   <div
                     className={`cursor-pointer px-4 py-2 text-sm ${selectedOptions.includes("Highest lowercase alphabet")
-                        ? "bg-blue-500 text-white"
-                        : "text-gray-700"
+                      ? "bg-blue-500 text-white"
+                      : "text-gray-700"
                       }`}
                     onClick={() =>
                       toggleOption("Highest lowercase alphabet")
