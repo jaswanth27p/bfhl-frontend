@@ -16,7 +16,7 @@ export default function Home() {
         throw new Error("Invalid JSON format");
       }
 
-      const response = await fetch("https://https://bfhl-1ydi.onrender.com/bfhl", {
+      const response = await fetch("https://bfhl-backend-3f0z.onrender.com/bfhl", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
