@@ -6,6 +6,7 @@ export default function Home() {
   const [responseData, setResponseData] = useState<any>(null);
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
   const [error, setError] = useState<string>("");
+  const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
 
   const handleSubmit = async () => {
     try {
@@ -31,15 +32,12 @@ export default function Home() {
     }
   };
 
-  const handleOptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value, checked } = e.target;
-    if (checked) {
-      setSelectedOptions([...selectedOptions, value]);
-    } else {
-      setSelectedOptions(
-        selectedOptions.filter((option) => option !== value)
-      );
-    }
+  const toggleOption = (option: string) => {
+    setSelectedOptions((prevSelectedOptions) =>
+      prevSelectedOptions.includes(option)
+        ? prevSelectedOptions.filter((item) => item !== option)
+        : [...prevSelectedOptions, option]
+    );
   };
 
   const renderResponse = () => {
@@ -83,6 +81,7 @@ export default function Home() {
   return (
     <div className="max-w-2xl mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">BFHL API Frontend</h1>
+      <p>Backend hosted in Render. Sometimes, it takes time to get a response.</p>
       <textarea
         rows={10}
         className="w-full p-2 border rounded"
@@ -100,34 +99,48 @@ export default function Home() {
       {responseData && (
         <div className="mt-4">
           <h2 className="text-xl font-semibold">Select Data to Display</h2>
-          <div className="flex flex-col space-y-2 mt-2">
-            <label className="inline-flex items-center">
-              <input
-                type="checkbox"
-                value="Alphabets"
-                onChange={handleOptionChange}
-                className="form-checkbox"
-              />
-              <span className="ml-2">Alphabets</span>
-            </label>
-            <label className="inline-flex items-center">
-              <input
-                type="checkbox"
-                value="Numbers"
-                onChange={handleOptionChange}
-                className="form-checkbox"
-              />
-              <span className="ml-2">Numbers</span>
-            </label>
-            <label className="inline-flex items-center">
-              <input
-                type="checkbox"
-                value="Highest lowercase alphabet"
-                onChange={handleOptionChange}
-                className="form-checkbox"
-              />
-              <span className="ml-2">Highest lowercase alphabet</span>
-            </label>
+          <div className="relative inline-block text-left">
+            <button
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              className="bg-gray-300 text-black py-2 px-4 rounded hover:bg-gray-400"
+            >
+              Select Options
+            </button>
+            {isDropdownOpen && (
+              <div className="absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                <div className="py-1">
+                  <div
+                    className={`cursor-pointer px-4 py-2 text-sm ${selectedOptions.includes("Alphabets")
+                        ? "bg-blue-500 text-white"
+                        : "text-gray-700"
+                      }`}
+                    onClick={() => toggleOption("Alphabets")}
+                  >
+                    Alphabets
+                  </div>
+                  <div
+                    className={`cursor-pointer px-4 py-2 text-sm ${selectedOptions.includes("Numbers")
+                        ? "bg-blue-500 text-white"
+                        : "text-gray-700"
+                      }`}
+                    onClick={() => toggleOption("Numbers")}
+                  >
+                    Numbers
+                  </div>
+                  <div
+                    className={`cursor-pointer px-4 py-2 text-sm ${selectedOptions.includes("Highest lowercase alphabet")
+                        ? "bg-blue-500 text-white"
+                        : "text-gray-700"
+                      }`}
+                    onClick={() =>
+                      toggleOption("Highest lowercase alphabet")
+                    }
+                  >
+                    Highest lowercase alphabet
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
           {renderResponse()}
         </div>
